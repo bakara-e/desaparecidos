@@ -1,0 +1,31 @@
+<script>
+    // margin convention: http://bl.ocks.org/mbostock/3019563
+    var margin = {top: 260, right: 10, bottom: 20, left: 150};
+    var width = 960 - margin.left - margin.right,
+        height = 1060 - margin.top - margin.bottom;
+
+    // llamamos a la proyección (mercator) y centramos el mapa en catalunya junto con la escala
+    var projection = d3.geo.mercator()
+        .center([2.172200, 41.395691])
+        .scale(300000)
+
+    // generamos el path con d3.geo y le asignamos la proyección
+    var path = d3.geo.path()
+        .projection(projection);
+
+    // añadimos el mapa al div con id mapa y le aplicamos el margen
+    var svg = d3.select("#mapa").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // aquí está la salsa. Llamamos a nuestro topojson y lo mostramos
+        d3.json("seccio-censal_topo.json", function(error, m) {
+            if (error) return console.error(error);
+
+        svg.append("path")
+            .datum(topojson.mesh(m))
+            .attr("d", path)
+        });
+    </script>
